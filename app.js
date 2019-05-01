@@ -36,7 +36,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./config/passport')(passport);
 
-const staticFileMiddleware = express.static(path.join(__dirname + 'public'));
+const staticFileMiddleware = express.static(path.join(__dirname + '/public'));
 app.use(staticFileMiddleware);
 app.use(history({
     disableDotRule: true,
@@ -45,7 +45,7 @@ app.use(history({
 app.use(staticFileMiddleware);
 
 app.get('/', function (req, res) {
-    res.render(path.join(__dirname + 'public/index.html'));
+    res.render(path.join(__dirname + '/public/index.html'));
   });
 
 // Router Page
