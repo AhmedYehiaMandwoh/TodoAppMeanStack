@@ -7,7 +7,9 @@ const mongoose = require('mongoose');
 const config = require('./config/database')
 const users = require('./routes/users')
 const posts = require('./routes/posts')
-const path = require('path')
+const path = require('path');
+const history = require('connect-history-api-fallback');
+
 mongoose.connect(config.database, {useNewUrlParser: true});
 
 mongoose.connection.on('connected', () => {
@@ -25,7 +27,6 @@ const app = express();
 // Cors
 app.use(cors());
 // Static Folder
-app.use(express.static(path.join(__dirname, 'public')))
 
 // BodyParser
 app.use(bodyParser.json());
@@ -35,20 +36,27 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./config/passport')(passport);
 
-app.get('/', (req, res, next) => {
-    res.send('Hello From Home')
-});
+const staticFileMiddleware = express.static(path.join(__dirname + 'public'));
+app.use(staticFileMiddleware);
+app.use(history({
+    disableDotRule: true,
+    verbose: true
+  }));
+app.use(staticFileMiddleware);
 
+app.get('/', function (req, res) {
+    res.render(path.join(__dirname + 'public/index.html'));
+  });
 
 // Router Page
 app.use('/users', users);
 app.use('/posts', posts)
 
 // Port
-app.listen(process.env.PORT || 3000, () => {
-    console.log("Server started.......");
 
-})
-
+var server = app.listen(process.env.PORT || 8080, function () {
+    var port = server.address().port;
+    console.log("App now running on port", port);
+  });
 
 
