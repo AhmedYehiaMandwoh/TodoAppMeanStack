@@ -45,8 +45,10 @@ app.use('/users', users);
 app.use('/posts', posts)
 
 // Port
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log('Server Is Started With Port ' + PORT)
-});
+app.listen(process.env.PORT || 3000, () => {
+    console.log("Server started.......");
+
+})
+
+
 
