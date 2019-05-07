@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ValidateService } from 'src/app/services/validate.service';
 import { NgFlashMessageService } from 'ng-flash-messages';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { TodosService } from 'src/app/services/todos.service';
 
 @Component({
   selector: 'app-home',
@@ -9,57 +10,35 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  todos;
 
-  constructor( private validateService: ValidateService ,private FlashMessage: NgFlashMessageService,
-    private router: Router) { }
+  constructor( private authService: AuthService ,private FlashMessage: NgFlashMessageService,
+    private router: Router,private TodoSer: TodosService) { }
+ currentUser = this.authService.getCurrentUser();
 
   ngOnInit() {
+   this.getAllTodos();
   }
-name: String;
-email: String;
-username: string;
-description: String
-needs: string;
-
-onSubscribe( ){
-  if(!this.name || !this.email ) {
-    this.FlashMessage.showFlashMessage({messages: ['Complete All Fields'], dismissible: true, timeout: 1000, type: 'danger'})
-
-  }else{
-    this.FlashMessage.showFlashMessage({messages: ['Thanks For Subscribe US'], dismissible: true, timeout: 1000, type: 'success'});
-    
-    this.name = '';
-    this.email = '';
-    
-  }
-}   
-
-
-
-onSend() {
-  if(!this.name || !this.email || !this.needs ) {
-    this.FlashMessage.showFlashMessage({messages: ['Complete All Fields'], dismissible: true, timeout: 2000, type: 'danger'})
-
-  }else{
-    this.FlashMessage.showFlashMessage({messages: ['Give US Time To Design Your Project'], dismissible: true, timeout: 2000, type: 'success'})
-    this.name = '';
-    this.needs = '';
-    this.email = '';
-  }
-}
-  onSubmit() {
-    if(!this.username || !this.description) {
-      this.FlashMessage.showFlashMessage({messages: ['Please Fill All Fields'], dismissible: true, timeout: 2000, type: 'danger'})
-
-    }else{
-      this.FlashMessage.showFlashMessage({messages: ['Thanks We Will Call You Soon'], dismissible: true, timeout: 2000, type: 'success'})
-      this.username = '';
-      this.description = '';
+  getAllTodos() {
+    const currentUser = this.authService.getCurrentUser();
+    if(currentUser) {
+      const query = {owner: currentUser.id};
+    this.TodoSer.getTodos(query).subscribe(data => {
+      this.todos = data as any
+    })
+    }else {
+      this.FlashMessage.showFlashMessage({messages: ['Deleted Successfully'], dismissible: true, timeout: 2000, type: 'success'})
     }
-   
   }
-  
-
-    
+  deleteTask(taskId){
+      this.TodoSer.deleteTodo(taskId).subscribe(data => {
+        if((data as any).success) {
+          this.FlashMessage.showFlashMessage({messages: ['Deleted Successfully'], dismissible: true, timeout: 2000, type: 'success'})
+          window.location.reload();
+        } else {
+          console.log('error')
+        }
+      })
+  } 
 
 }

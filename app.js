@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const config = require('./config/database')
-const users = require('./routes/users')
-const posts = require('./routes/posts')
+const users = require('./routes/users');
+const Todo = require('./routes/todos')
 const path = require('path');
 const history = require('connect-history-api-fallback');
 
@@ -26,16 +26,14 @@ const app = express();
 
 // Cors
 app.use(cors());
-// Static Folder
 
 // BodyParser
 app.use(bodyParser.json());
-// Home
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
 require('./config/passport')(passport);
-
+// Static Folder
 const staticFileMiddleware = express.static(path.join(__dirname + '/public'));
 app.use(staticFileMiddleware);
 app.use(history({
@@ -45,18 +43,17 @@ app.use(history({
 app.use(staticFileMiddleware);
 
 app.get('/', function (req, res) {
-    res.render(path.join(__dirname + '/public/index.html'));
+    res.send('hello from home')
   });
 
 // Router Page
 app.use('/users', users);
-app.use('/posts', posts)
+app.use('/todos', Todo);
 
 // Port
 
-var server = app.listen(process.env.PORT || 8080, function () {
-    var port = server.address().port;
-    console.log("App now running on port", port);
+const server = app.listen(process.env.PORT || 8080, function () {
+    const port = server.address().port;     console.log("App now running on port", port);
   });
 
 

@@ -9,11 +9,12 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { HomeComponent } from './components/home/home.component';
-import { ProfileComponent } from './components/profile/profile.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ValidateService } from './services/validate.service';
 import { NgFlashMessagesModule } from 'ng-flash-messages';
 import { AuthService } from './services/auth.service';
+import { AddTodoComponent } from './components/add-todo/add-todo.component';
+import { TodosService } from './services/todos.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,8 +22,8 @@ import { AuthService } from './services/auth.service';
     LoginComponent,
     RegisterComponent,
     HomeComponent,
-    ProfileComponent,
-    FooterComponent
+    FooterComponent,
+    AddTodoComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,7 +33,7 @@ import { AuthService } from './services/auth.service';
     RouterModule,
     NgFlashMessagesModule
   ],
-  providers: [ValidateService, AuthService],
+  providers: [ValidateService, AuthService, TodosService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
